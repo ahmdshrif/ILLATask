@@ -78,7 +78,7 @@ const Products = (props) => {
   const _get_more_Search_Products = () => {
     _make_request(async (page) => {
       const data = await get_Products({page: page + 1, name: search});
-      setSearchResult([...AllProducts, ...data.data]);
+      setSearchResult([...SearchResult, ...data.data]);
       set_Search_pagination(data.meta.pagination);
     }),
       Search_pagination;
