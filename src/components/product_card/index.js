@@ -16,7 +16,7 @@ const product_card = ({Data}) => {
       <FastImage
         style={styles.image}
         PlaceholderContent={<ActivityIndicator color="white" size="large" />}
-        source={{uri: image}}
+        source={{uri: image, cache:FastImage.cacheControl.web}}
       />
       <Card.Title h6 style={{marginBottom: 10, marginTop: 20}}>
         {name}
