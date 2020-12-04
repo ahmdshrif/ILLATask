@@ -31,95 +31,66 @@ const Products = (props) => {
   //***************************************** */
   //             Effects                      //
   //***************************************** */
-  useEffect(() => {
+  const _onStart = () => {
     _get_Products();
-  }, []);
-
+  };
+  useEffect(_onStart, []);
   //***************************************** */
   //             local functions              //
   //***************************************** */
-
-  const _get_Products = async () => {
+  const _make_request = async (requestFunction, pagination) => {
+    const {page, pages} = pagination;
+    if (page >= pages) {
+      return;
+    }
     try {
       setIsLoad(true);
+      await requestFunction(page);
+      setError('');
+      setIsLoad(false);
+    } catch (error) {
+      setIsLoad(false);
+      setError(error.message);
+    }
+  };
+  const _get_Products = async () => {
+    await _make_request(async (page) => {
       const data = await get_Products({});
       setAllProducts(data.data);
       set_Result_pagination(data.meta.pagination);
-      setError('');
-      setIsLoad(false);
-    } catch (error) {
-      setError(error.message);
-      setIsLoad(false);
-    }
+    }, Result_pagination);
   };
-  const _get_more_Products = async () => {
-    const {page, pages} = Result_pagination;
-    if (page >= pages) {
-      return;
-    }
-    try {
-      setIsLoad(true);
+  const _get_more_Products = () => {
+    _make_request(async (page) => {
       const data = await get_Products({page: page + 1});
       setAllProducts([...AllProducts, ...data.data]);
       set_Result_pagination(data.meta.pagination);
-      setError('');
-
-      setIsLoad(false);
-    } catch (error) {
-      setError(error.message);
-      setIsLoad(false);
-    }
+    }, Result_pagination);
   };
-  const _get_Search_Products = async () => {
-    try {
-      setIsLoad(true);
+  const _get_Search_Products = () => {
+    _make_request(async () => {
       const data = await get_Products({name: search});
       setSearchResult(data.data);
       set_Search_pagination(data.meta.pagination);
-      setError('');
-      setIsLoad(false);
-    } catch (error) {
-      setError(error.message);
-      setIsLoad(false);
-    }
+    }),
+      Search_pagination;
   };
-  const _get_more_Search_Products = async () => {
-    const {page, pages} = Search_pagination;
-    if (page >= pages) {
-      return;
-    }
-    try {
-      setIsLoad(true);
-      const data = await get_Products({
-        page: Search_pagination.page + 1,
-        name: search,
-      });
+  const _get_more_Search_Products = () => {
+    _make_request(async (page) => {
+      const data = await get_Products({page: page + 1, name: search});
       setSearchResult([...AllProducts, ...data.data]);
       set_Search_pagination(data.meta.pagination);
-      setError('');
-      setIsLoad(false);
-    } catch (error) {
-      setError(error.message);
-      setIsLoad(false);
-    }
+    }),
+      Search_pagination;
   };
 
   const onEndReached = () => {
-    if (isSearchMode) {
-      _get_more_Search_Products();
-      return;
-    }
-    _get_more_Products();
-    return;
+    isSearchMode ? _get_more_Search_Products() : _get_more_Products();
   };
 
   const onSubmitEditing = () => {
-    if (search) {
-      _get_Search_Products();
-      setIsSearchMode(true);
-      return;
-    }
-    setIsSearchMode(false);
+    setIsSearchMode(true);
+    _get_Search_Products();
   };
   const onCancelSearch = () => {
     setIsSearchMode(false);
@@ -156,7 +127,6 @@ const Products = (props) => {
           returnKeyType="search"
           onSubmitEditing={onSubmitEditing}
           inputStyle={{fontSize: 14}}
-          //   onTextInput={() => {}}
           showCancel
           onCancel={onCancelSearch}
           containerStyle={styles.SearchContainerStyle}
