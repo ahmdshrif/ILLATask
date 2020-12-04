@@ -1,4 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AsyncStorage} from 'react-native';
 
 const FAVORITES_KEY = '@ILLA:Favorites';
 
@@ -12,7 +13,6 @@ export const getFavorites = async () => {
   } catch (e) {}
 };
 
-
 /**
  * @param item item to set in storage {object}
  * @returns  favorite products
@@ -24,7 +24,6 @@ export const setFavorite = async (item) => {
     return await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   } catch (error) {}
 };
-
 
 /**
  * @param item item to remove from favorite storage {object}
