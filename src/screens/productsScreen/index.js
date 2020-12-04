@@ -68,20 +68,18 @@ const Products = (props) => {
     }, Result_pagination);
   };
   const _get_Search_Products = () => {
-    _make_request(async () => {
+    _make_request(async (page) => {
       const data = await get_Products({name: search});
       setSearchResult(data.data);
       set_Search_pagination(data.meta.pagination);
-    }),
-      Search_pagination;
+    }, Search_pagination);
   };
   const _get_more_Search_Products = () => {
     _make_request(async (page) => {
       const data = await get_Products({page: page + 1, name: search});
       setSearchResult([...SearchResult, ...data.data]);
       set_Search_pagination(data.meta.pagination);
-    }),
-      Search_pagination;
+    }, Search_pagination);
   };
 
   const onEndReached = () => {
