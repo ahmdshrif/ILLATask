@@ -45,16 +45,14 @@ const Details = ({route}) => {
       alert('some thing went wrong');
     }
   };
-  let categoriesString = '';
-  categories.forEach((element) => {
-    categoriesString += element.name + ', ';
-  });
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={{flex: 1, alignItems: 'center'}}>
         <Image style={{height: 200, width: 200}} source={{uri: image}} />
         <Text style={styles.text}>{`Name : ${name}`}</Text>
-        <Text style={styles.text}>{`categories :  ${categoriesString}`}</Text>
+        <Text
+          style={styles.text}>{`categories :  ${categories.toString()}`}</Text>
         <Text style={styles.text}>{`Description : \n${description}`}</Text>
         <Text style={styles.text}>{`Price : ${price}`}</Text>
         <Text style={styles.text}>{`Discount :  ${discount_amount}`}</Text>
